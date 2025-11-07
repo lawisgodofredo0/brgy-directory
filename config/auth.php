@@ -37,8 +37,12 @@ return [
 
     'guards' => [
         'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
+        'driver' => 'session',
+        'provider' => 'users',
+    ],
+    'admin' => [
+        'driver' => 'session',
+        'provider' => 'admins',
         ],
     ],
 
@@ -61,14 +65,19 @@ return [
 
     'providers' => [
         'users' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\User::class,
+    ],
+        'admins' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\User::class),
+           'model' => App\Models\Admin::class,
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+    // ✅ new admin provider
+    'admins' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\Admin::class,
+        ],
     ],
 
     /*
@@ -97,6 +106,14 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
+            // ✅ new admin password broker
+    'admins' => [
+        'provider' => 'admins',
+        'table' => 'password_reset_tokens', // we’ll create this next
+        'expire' => 60,
+        'throttle' => 60,
+    ],
+
     ],
 
     /*

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreign('official_id')->references('id')->on('officials')->onDelete('set null');
         });
     }
-
+ 
     public function down(): void
     {
         Schema::dropIfExists('services');

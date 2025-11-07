@@ -1,67 +1,90 @@
+{{-- resources/views/layouts/public.blade.php --}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Barangay Balintawak Directory</title>
-
-    {{-- Bootstrap 5 CDN --}}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    {{-- AOS (Animate on Scroll) for simple animations --}}
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-
-    <style>
-        body {
-            background-color: #f9f9f9;
-            font-family: "Poppins", sans-serif;
-        }
-        nav.navbar {
-            background-color: #198754;
-        }
-        footer {
-            background-color: #198754;
-            color: white;
-            text-align: center;
-            padding: 10px;
-            margin-top: 50px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>@yield('title', 'Barangay Balintawak')</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      display: flex;
+      min-height: 100vh;
+      background: #f8fafc;
+      overflow-x: hidden;
+    }
+    .sidebar {
+      width: 220px;
+      background: #1e293b;
+      color: #fff;
+      flex-shrink: 0;
+      padding-top: 1rem;
+    }
+    .sidebar a {
+      color: #cbd5e1;
+      display: block;
+      padding: .75rem 1.25rem;
+      text-decoration: none;
+      border-radius: .375rem;
+      transition: background 0.2s, color 0.2s;
+    }
+    .sidebar a:hover, .sidebar a.active {
+      background: #334155;
+      color: #fff;
+    }
+    .content {
+      flex-grow: 1;
+      padding: 2rem;
+    }
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+      border-radius: .5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      padding: 1rem 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .header-bar h5 {
+      margin: 0;
+      color: #0d6efd;
+      font-weight: 600;
+    }
+    .btn-success {
+      background-color: #198754;
+      border: none;
+    }
+    .btn-success:hover {
+      background-color: #157347;
+    }
+  </style>
 </head>
 <body>
 
-    {{-- Navbar --}}
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="/">Barangay Balintawak</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                 <li class="nav-item"><a class="nav-link" href="{{ route('home') }}">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('officials.index') }}">Officials</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('services.index') }}">Services</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('contact') }}">Contact</a></li>
-                </ul>
-            </div>
-        </div>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header px-3 mb-4">
+      <h5 class="text-white">Barangay Balintawak</h5>
+    </div>
+    <nav class="nav flex-column">
+      <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
+      <a href="{{ route('officials.index') }}" class="nav-link {{ request()->routeIs('officials.index') ? 'active' : '' }}">Officials</a>
+      <a href="{{ route('services.index') }}" class="nav-link {{ request()->routeIs('services.index') ? 'active' : '' }}">Services</a>
+      <a href="{{ route('contact') }}" class="nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">Contact</a>
     </nav>
+  </aside>
 
-    {{-- Main content --}}
-    <div class="container mt-5">
-        @yield('content')
+  <!-- Main content area -->
+  <div class="content">
+    <div class="header-bar">
+      <h5>Barangay Balintawak</h5>
+      <a href="{{ route('admin.login') }}" class="btn btn-success shadow-sm px-3">Admin Login</a>
     </div>
 
-    {{-- Footer --}}
-    <footer>
-        <p>© 2025 Barangay Balintawak, Talibon, Bohol. All Rights Reserved.</p>
-    </footer>
+    @yield('content')
+  </div>
 
-    {{-- Bootstrap & AOS JS --}}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>AOS.init();</script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
