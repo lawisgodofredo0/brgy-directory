@@ -73,10 +73,11 @@ return [
            'model' => App\Models\Admin::class,
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+    // ✅ new admin provider
+    'admins' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\Admin::class,
+        ],
     ],
 
     /*
@@ -105,6 +106,14 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
+            // ✅ new admin password broker
+    'admins' => [
+        'provider' => 'admins',
+        'table' => 'password_reset_tokens', // we’ll create this next
+        'expire' => 60,
+        'throttle' => 60,
+    ],
+
     ],
 
     /*

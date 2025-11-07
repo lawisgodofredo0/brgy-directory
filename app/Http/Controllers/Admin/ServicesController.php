@@ -5,8 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Service;
+use App\Models\Official;
 
-class ServiceController extends Controller
+class ServicesController extends Controller
 {
     public function index()
     {
@@ -16,41 +17,59 @@ class ServiceController extends Controller
 
     public function create()
     {
-        return view('admin.services.create');
+        $officials = Official::all();
+        return view('admin.services.create', compact('officials'));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
+        $validatedData = $request->validate([
+            'name'         => 'required|string|max:255',
+            'description'  => 'nullable|string',
+            'official_id'  => 'nullable|exists:officials,id',
+            'office_hours' => 'nullable|string|max:255',
         ]);
+            // ✅ Check if empty and set default manually
+    if (empty($validatedData['office_hours'])) {
+        $validatedData['office_hours'] = 'By Appointment';
+    }
 
-        Service::create($request->only('name', 'description'));
 
-        return redirect()->route('admin.services.index')->with('success', 'Service added successfully!');
+        Service::create($validatedData);
+        
+        return redirect()
+            ->route('admin.services.index')
+            ->with('success', 'Service added successfully!');
     }
 
     public function edit(Service $service)
     {
-        return view('admin.services.edit', compact('service'));
+        $officials = Official::all();
+        return view('admin.services.edit', compact('service', 'officials'));
     }
 
     public function update(Request $request, Service $service)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
+        $validatedData = $request->validate([
+            'name'         => 'required|string|max:255',
+            'description'  => 'nullable|string',
+            'official_id'  => 'nullable|exists:officials,id',
+            'office_hours' => 'nullable|string|max:255',
         ]);
 
-        $service->update($request->only('name', 'description'));
+        $service->update($validatedData);
 
-        return redirect()->route('admin.services.index')->with('success', 'Service updated successfully!');
+        return redirect()
+            ->route('admin.services.index')
+            ->with('success', 'Service updated successfully!');
     }
 
     public function destroy(Service $service)
     {
         $service->delete();
-        return redirect()->route('admin.services.index')->with('success', 'Service deleted!');
+
+        return redirect()
+            ->route('admin.services.index')
+            ->with('success', 'Service deleted!');
     }
 }

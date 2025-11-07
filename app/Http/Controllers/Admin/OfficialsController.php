@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Official;
 
-class OfficialController extends Controller
+class OfficialsController extends Controller
 {
     public function index()
     {
@@ -22,14 +22,28 @@ class OfficialController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'position' => 'required|string|max:255',
-            'contact' => 'nullable|string|max:255',
+            'first_name'       => 'required|string|max:255',
+            'last_name'        => 'required|string|max:255',
+            'position'         => 'required|string|max:255',
+            'phone'            => 'nullable|string|max:255',
+            'email'            => 'nullable|email|max:255',
+            'responsibilities' => 'nullable|string',
+            'photo'            => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
         ]);
 
-        Official::create($request->only('name', 'position', 'contact'));
+        $data = $request->only([
+            'first_name', 'last_name', 'position', 'phone', 'email', 'responsibilities'
+        ]);
 
-        return redirect()->route('admin.officials.index')->with('success', 'Official added successfully!');
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('officials_photos', 'public');
+            $data['photo'] = $path;
+        }
+
+        Official::create($data);
+
+        return redirect()->route('admin.officials.index')
+                         ->with('success', 'Official added successfully!');
     }
 
     public function edit(Official $official)
@@ -40,19 +54,35 @@ class OfficialController extends Controller
     public function update(Request $request, Official $official)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'position' => 'required|string|max:255',
-            'contact' => 'nullable|string|max:255',
+            'first_name'       => 'required|string|max:255',
+            'last_name'        => 'required|string|max:255',
+            'position'         => 'required|string|max:255',
+            'phone'            => 'nullable|string|max:255',
+            'email'            => 'nullable|email|max:255',
+            'responsibilities' => 'nullable|string',
+            'photo'            => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
         ]);
 
-        $official->update($request->only('name', 'position', 'contact'));
+        $data = $request->only([
+            'first_name', 'last_name', 'position', 'phone', 'email', 'responsibilities'
+        ]);
 
-        return redirect()->route('admin.officials.index')->with('success', 'Official updated successfully!');
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('officials_photos', 'public');
+            $data['photo'] = $path;
+        }
+
+        $official->update($data);
+
+        return redirect()->route('admin.officials.index')
+                         ->with('success', 'Official updated successfully!');
     }
 
     public function destroy(Official $official)
     {
+        // Optionally: delete old photo file from storage if needed
         $official->delete();
-        return redirect()->route('admin.officials.index')->with('success', 'Official deleted!');
+        return redirect()->route('admin.officials.index')
+                         ->with('success', 'Official deleted!');
     }
 }
